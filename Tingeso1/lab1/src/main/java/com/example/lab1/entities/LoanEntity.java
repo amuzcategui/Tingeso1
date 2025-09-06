@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 //Es el núcleo del sistema, encargado de
 //controlar todo el ciclo de vida de un préstamo: desde la entrega de herramientas a los clientes,
@@ -24,13 +25,13 @@ public class LoanEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id;
+    private long id;
 
-    private LocalDateTime startDate;
-    private LocalDateTime dueDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate dueDate;
+    private LocalDate endDate;
     private String rutCustomer;
-    private String toolName;
+    private List<String> toolNames;
     private double rentalFee;
     private double fine;
 

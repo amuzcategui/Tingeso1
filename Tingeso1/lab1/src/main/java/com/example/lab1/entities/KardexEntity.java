@@ -5,19 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "kardex")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//Un movimiento debe incluir: tipo (ingreso, préstamo, devolución, baja,
+//reparación), fecha, usuario y cantidad afectada.
 public class KardexEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
-    
+
     private String rutCustomer;
     private String movementType;
+    private LocalDate movementDate;
     private String toolName;
     private int toolQuantity;
 

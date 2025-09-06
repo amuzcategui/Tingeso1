@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +27,8 @@ public class CustomerEntity {
     private String rut;
     private String password;
     private String phone;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private boolean admin;
     private String status;
+    private int quantityLoans;
 }
