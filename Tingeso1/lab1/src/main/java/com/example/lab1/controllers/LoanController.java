@@ -36,4 +36,16 @@ public class LoanController {
         }
     }
 
+    @PutMapping("/{idLoan}/return")
+    public ResponseEntity<?> returnTools(
+            @PathVariable long idLoan,
+            @RequestBody(required = false) List<String> damagedTools) {
+        try {
+            LoanEntity updatedLoan = loanService.returnTools(idLoan, damagedTools);
+            return ResponseEntity.ok(updatedLoan);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

@@ -34,5 +34,7 @@ public class LoanEntity {
     private List<String> toolNames;
     private double rentalFee;
     private double fine;
+    private List<String> damagedTools;
+    private List<String> discardedTools;
 
 }
