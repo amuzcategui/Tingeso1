@@ -25,7 +25,7 @@ public class ToolService {
     List<String> states= Arrays.asList("Disponible", "Prestada", "En reparación", "Dada de baja");
     public ToolEntity saveTool(ToolEntity tool, String rutAdmin) {
 
-        if (tool.getName() == null || !states.contains(tool.getInitialState()) || tool.getValue() <= 0 || tool.getStock() <= 0) {
+        if (tool.getName() == null || tool.getToolValue() <= 0 || tool.getStock() <= 0) {
             throw new IllegalArgumentException("Datos inválidos para registrar la herramienta");
         }
         List<ToolEntity> existingTools = toolRepository.findByname(tool.getName());
@@ -34,12 +34,16 @@ public class ToolService {
 
         for (ToolEntity existing : existingTools) {
             if (existing.getInitialState().equals(tool.getInitialState())
-                    && existing.getValue() == tool.getValue()
+                    && existing.getToolValue() == tool.getToolValue()
                     && existing.getCategory().equals(tool.getCategory())) {
                 existing.setStock(existing.getStock() + tool.getStock());
                 toolToSave = existing;
                 found = true;
             }
+        }
+
+        if (!found) {
+            toolToSave.setInitialState("Disponible");
         }
 
         ToolEntity savedTool = toolRepository.save(toolToSave);
@@ -56,13 +60,8 @@ public class ToolService {
         return savedTool;
     }
 
-    //Dañadas (reparación) o en desuso (darle de baja)
-//Estados válidos: Disponible, Prestada, En reparación, Dada de baja
-    //Kardex-> INGRESO, PRESTAMO, DEVOLUCION, BAJA, REPARACION
-    //BUSCAR CAMBIAR EL STATE (INITIAL STATE) Y EL CATEGORY
-    //EVENTUALMENTE SE VA A QUITAR LO DEL IsAdmin, PORQUE SE PUEDE HACER POR FRONT
-    //Utilizar esto en el return loan
-    public boolean deactivateTool(Long idTool, String rutCustomer, int quantityToDeactivate) {
+
+    public ToolEntity deactivateTool(Long idTool, String rutCustomer, int quantityToDeactivate) {
         try {
             ToolEntity tool = toolRepository.findByid(idTool);
 
@@ -74,40 +73,40 @@ public class ToolService {
                 throw new IllegalArgumentException("No se puede dar de baja más unidades de las existentes");
             }
 
-            // Reducir stock
+            // Reduce stock
             tool.setStock(tool.getStock() - quantityToDeactivate);
 
-            // Cambiar estado si se da de baja todo el stock
+            // change status
             if (tool.getStock() == 0) {
                 tool.setInitialState("Dada de baja");
             }
-        //PROBAR BIEN ESTO, NO SE SI SE ESTÁ CREANDO LA HERRAMIENTA CON EL NUEVO ESTADO O SI SOLO SE ESTÁ BAJANDO EL STOCK
+
             toolRepository.save(tool);
 
             ToolEntity dtool = new ToolEntity();
             dtool.setName(tool.getName());
             dtool.setCategory(tool.getCategory());
-            dtool.setValue(tool.getValue());
+            dtool.setToolValue((tool.getToolValue()));
             dtool.setInitialState("Dada de baja");
             dtool.setStock(quantityToDeactivate);
             toolRepository.save(dtool);
 
-            // Registrar movimiento en Kardex
+            // Kardex movement
             KardexEntity movement = new KardexEntity();
             movement.setRutCustomer(rutCustomer);
             movement.setMovementType("Baja");
             movement.setMovementDate(LocalDate.now());
             movement.setToolName(tool.getName());
-            movement.setToolQuantity(quantityToDeactivate); // registramos solo la cantidad dada de baja
+            movement.setToolQuantity(quantityToDeactivate);
             kardexRepository.save(movement);
 
-            return true;
+            return tool;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean availableTool(Long idTool, String rutCustomer, int quantityToActivate) {
+    public ToolEntity availableTool(Long idTool, String rutCustomer, int quantityToActivate) {
         try {
             ToolEntity tool = toolRepository.findByid(idTool);
 
@@ -115,38 +114,47 @@ public class ToolService {
                 throw new IllegalArgumentException("La cantidad de activar debe ser mayor que 0");
             }
 
-            // Reducir stock
-            tool.setStock(tool.getStock() + quantityToActivate);
+            List<ToolEntity> existingTools = toolRepository.findByname(tool.getName());
+            ToolEntity toolToSave = tool;
+            boolean found = false;
 
-            // Cambiar estado si se da de baja todo el stock
+            for (ToolEntity existing : existingTools) {
+                if (existing.getInitialState().equals("Disponible")
+                        && existing.getToolValue() == tool.getToolValue()
+                        && existing.getCategory().equals(tool.getCategory())) {
+                    existing.setStock(existing.getStock() + quantityToActivate);
+                    toolToSave = existing;
 
-            //PROBAR BIEN ESTO, NO SE SI SE ESTÁ CREANDO LA HERRAMIENTA CON EL NUEVO ESTADO O SI SOLO SE ESTÁ BAJANDO EL STOCK
-            toolRepository.save(tool);
+                    found = true;
+                }
+            }
 
-            ToolEntity dtool = new ToolEntity();
-            dtool.setName(tool.getName());
-            dtool.setCategory(tool.getCategory());
-            dtool.setValue(tool.getValue());
-            dtool.setInitialState("Disponible");
-            dtool.setStock(quantityToActivate);
-            toolRepository.save(dtool);
+            toolRepository.save(toolToSave);
 
-            // Registrar movimiento en Kardex
+
+            tool.setStock(tool.getStock() - quantityToActivate);
+            if (tool.getStock() <= 0) {
+                toolRepository.delete(tool);
+            } else {
+                toolRepository.save(tool);
+            }
+
+            // Movement
             KardexEntity movement = new KardexEntity();
             movement.setRutCustomer(rutCustomer);
-            movement.setMovementType("Ingreso");
+            movement.setMovementType("Devolución");
             movement.setMovementDate(LocalDate.now());
             movement.setToolName(tool.getName());
-            movement.setToolQuantity(quantityToActivate); // registramos solo la cantidad dada de baja
+            movement.setToolQuantity(quantityToActivate);
             kardexRepository.save(movement);
 
-            return true;
+            return tool;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean loanTool(Long idTool, String rutCustomer, int quantityToLoan) {
+    public ToolEntity loanTool(Long idTool, String rutCustomer, int quantityToLoan) {
         try {
             ToolEntity tool = toolRepository.findByid(idTool);
 
@@ -158,23 +166,22 @@ public class ToolService {
                 throw new IllegalArgumentException("No se puede dar de préstamo más unidades de las existentes");
             }
 
-            // Reducir stock
+            // Reduce stock
             tool.setStock(tool.getStock() - quantityToLoan);
 
-            // Cambiar estado si se da de baja todo el stock
-
-            //PROBAR BIEN ESTO, NO SE SI SE ESTÁ CREANDO LA HERRAMIENTA CON EL NUEVO ESTADO O SI SOLO SE ESTÁ BAJANDO EL STOCK
             toolRepository.save(tool);
+
+
 
             ToolEntity dtool = new ToolEntity();
             dtool.setName(tool.getName());
             dtool.setCategory(tool.getCategory());
-            dtool.setValue(tool.getValue());
+            dtool.setToolValue(tool.getToolValue());
             dtool.setInitialState("Prestada");
             dtool.setStock(quantityToLoan);
             toolRepository.save(dtool);
 
-            // Registrar movimiento en Kardex
+            // Kardex movement
             KardexEntity movement = new KardexEntity();
             movement.setRutCustomer(rutCustomer);
             movement.setMovementType("Préstamo");
@@ -183,13 +190,13 @@ public class ToolService {
             movement.setToolQuantity(quantityToLoan);
             kardexRepository.save(movement);
 
-            return true;
+            return tool;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean repairTool(Long idTool, String rutCustomer, int quantityToRepair) {
+    public ToolEntity repairTool(Long idTool, String rutCustomer, int quantityToRepair) {
         try {
             ToolEntity tool = toolRepository.findByid(idTool);
 
@@ -201,38 +208,54 @@ public class ToolService {
                 throw new IllegalArgumentException("No se puede reparar más unidades de las existentes");
             }
 
-            // Reducir stock
+
             tool.setStock(tool.getStock() - quantityToRepair);
 
-            // Cambiar estado si se da de baja todo el stock
+
             if (tool.getStock() == 0) {
                 tool.setInitialState("Dada de baja");
             }
-            //PROBAR BIEN ESTO, NO SE SI SE ESTÁ CREANDO LA HERRAMIENTA CON EL NUEVO ESTADO O SI SOLO SE ESTÁ BAJANDO EL STOCK
+
             toolRepository.save(tool);
 
             ToolEntity rtool = new ToolEntity();
             rtool.setName(tool.getName());
             rtool.setCategory(tool.getCategory());
-            rtool.setValue(tool.getValue());
+            rtool.setToolValue(tool.getToolValue());
             rtool.setInitialState("En reparación");
             rtool.setStock(quantityToRepair);
             toolRepository.save(rtool);
 
-            // Registrar movimiento en Kardex
             KardexEntity movement = new KardexEntity();
             movement.setRutCustomer(rutCustomer);
             movement.setMovementType("reparación");
             movement.setMovementDate(LocalDate.now());
             movement.setToolName(tool.getName());
-            movement.setToolQuantity(quantityToRepair); // registramos solo la cantidad dada de baja
+            movement.setToolQuantity(quantityToRepair);
             kardexRepository.save(movement);
 
-            return true;
+            return tool;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    public ToolEntity updateReplacementValue(Long idTool, double newValue) {
+        ToolEntity tool = toolRepository.findByid(idTool);
+        if (tool == null) throw new IllegalArgumentException("Herramienta no encontrada");
+        if (newValue <= 0) throw new IllegalArgumentException("Valor de reposición inválido");
+        tool.setToolValue(newValue);
+        return toolRepository.save(tool);
+    }
+
+    public ToolEntity updateFee(Long idTool, double newValue) {
+        ToolEntity tool = toolRepository.findByid(idTool);
+        if (tool == null) throw new IllegalArgumentException("Herramienta no encontrada");
+        if (newValue <= 0) throw new IllegalArgumentException("Valor de Fee inválido");
+        tool.setRentalFee(newValue);
+        return toolRepository.save(tool);
+    }
+
 
 
 

@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
-//(nombre, categoría, estado
-//inicial, valor de reposición)
-//Estados válidos: Disponible, Prestada, En reparación, Dada de baja
-// Solo los Administradores pueden dar de baja herramientas.
+
 @Entity
 @Table(name = "tools")
 @Data
@@ -23,7 +20,9 @@ public class ToolEntity {
     private Long id;
 
     private String name;
-    private double value;
+
+    private double toolValue;
+    private double rentalFee;
     private String initialState;
     private String category;
     private int stock;

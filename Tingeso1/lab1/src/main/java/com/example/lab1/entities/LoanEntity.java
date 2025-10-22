@@ -10,11 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//Es el núcleo del sistema, encargado de
-//controlar todo el ciclo de vida de un préstamo: desde la entrega de herramientas a los clientes,
-//hasta su devolución, cálculo de multas por atrasos y penalizaciones por daños. Incluye
-//validaciones de disponibilidad, restricciones a clientes con deudas, y actualización automática
-//de stock y estados.
+
 @Entity
 @Table(name = "loan")
 @Data
@@ -36,5 +32,6 @@ public class LoanEntity {
     private double fine;
     private List<String> damagedTools;
     private List<String> discardedTools;
+    private boolean paid = false;
 
 }

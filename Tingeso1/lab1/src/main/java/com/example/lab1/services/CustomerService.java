@@ -6,9 +6,12 @@ import com.example.lab1.repositories.LoanRepository;
 import com.example.lab1.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerService {
@@ -16,23 +19,7 @@ public class CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private LoanRepository loanRepository;
-    //Requisitos Funcionales
-    //• RF3.1 Registrar información de clientes (nombre, contacto, rut, estado).
-    //• RF3.2 Cambiar estado de cliente a “restringido” en caso de atrasos.
-    //Reglas de Negocio
-    //• Cada cliente debe registrarse con: nombre, RUT, teléfono y correo.
-    //• Estados de cliente: Activo(puede solicitar préstamos), Restringido (no puede hasta
-    //regularizar atrasos).
 
-    //private String name;
-    //    private String email;
-    //    private String rut;
-    //    private String password;
-    //    private String phone;
-    //    private LocalDateTime birthDate;
-    //    private boolean admin;
-    //    private String status;
-    //    private int quantityLoans;
 
     List<String> states= Arrays.asList("Activo", "Restringido");
     public CustomerEntity createCustomer(CustomerEntity customer) {
@@ -42,19 +29,62 @@ public class CustomerService {
             throw new IllegalArgumentException("Faltan datos para poder registrar al cliente");
         }
     }
-//Este no está funcionando correctamente
-    public CustomerEntity updateStatus(CustomerEntity customer) {
-        List<LoanEntity> existingLoans = loanRepository.findByrutCustomer(customer.getRut());
-        for (LoanEntity loan : existingLoans) {
-            if (loan.getDueDate()!= loan.getEndDate()){
-                customer.setStatus("Restringido");
-                //customerRepository.save(customer);
-            }else{
-                customer.setStatus("Activo");
+
+    public void updateRestriction(CustomerEntity customer) {
+        String rut = customer.getRut();
+
+        boolean hasOverdueActive = loanRepository
+                .existsByRutCustomerAndEndDateIsNullAndDueDateBefore(rut, LocalDate.now());
+
+        boolean hasUnpaidDebts = loanRepository
+                .existsByRutCustomerAndPaidIsFalseAndEndDateNotNull(rut);
+
+        if (hasOverdueActive || hasUnpaidDebts || customer.getQuantityLoans() >= 5) {
+            customer.setStatus("Restringido");
+        } else {
+            customer.setStatus("Activo");
+        }
+        customerRepository.save(customer);
+    }
+
+    public CustomerEntity checkAndCreateCustomer(Jwt jwt) {
+        String rut = jwt.getClaimAsString("rut");
+
+
+        CustomerEntity customer = customerRepository.findByrut(rut);
+
+        if (customer == null) {
+            System.out.println("Cliente no encontrado, creando nuevo registro completo...");
+            CustomerEntity newCustomer = new CustomerEntity();
+
+            newCustomer.setRut(rut);
+            newCustomer.setEmail(jwt.getClaimAsString("email"));
+            newCustomer.setName(jwt.getClaimAsString("given_name") + " " + jwt.getClaimAsString("family_name"));
+            newCustomer.setPhone(jwt.getClaimAsString("phone"));
+
+            String birthDateString = jwt.getClaimAsString("birthdate");
+            if (birthDateString != null) {
+                newCustomer.setBirthDate(LocalDate.parse(birthDateString));
             }
 
+            Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
+            List<String> roles = (List<String>) realmAccess.get("roles");
+            newCustomer.setAdmin(roles != null && roles.contains("ADMIN"));
+
+            newCustomer.setPassword(null);
+            newCustomer.setStatus("Activo");
+            newCustomer.setQuantityLoans(0);
+
+            // --- CAMBIO SOLICITADO ---
+            // En lugar de guardar directamente, llamamos a tu método createCustomer.
+            return this.createCustomer(newCustomer);
         }
 
-        return customerRepository.save(customer);
+        return customer;
     }
 }
+
+
+
+
+

@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//Un movimiento debe incluir: tipo (ingreso, préstamo, devolución, baja,
-//reparación), fecha, usuario y cantidad afectada.
+
 public class KardexEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

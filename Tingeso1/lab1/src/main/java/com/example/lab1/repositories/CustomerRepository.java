@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {
     public CustomerEntity findByrut(String rut);
+    List<CustomerEntity> findAll();
 
     List<CustomerEntity> findBystatus(String status);
     List<CustomerEntity> findByname(String name);
