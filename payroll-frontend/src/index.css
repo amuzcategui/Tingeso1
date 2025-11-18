@@ -180,7 +180,7 @@ h1 {
 h2{
   font-size: 2.5em;
   line-height: 1.1;
-  font-family:  monospace,  'Brush Script MT';
+  font-family: Vegur, 'PT Sans', Verdana, sans-serif;
   text-align: center;
   color:#BB0A21;
 }
@@ -188,7 +188,7 @@ h2{
 p{
   font-size: 1.2em;
   line-height: 1.5;
-  font-family:  monospace,  'Brush Script MT';
+  font-family: Vegur, 'PT Sans', Verdana, sans-serif;
   text-align: center;
   color:#52154E;
 }
@@ -203,7 +203,7 @@ h4{
 }
 
 .navbar-link {
-  font-family: monospace, 'Brush Script MT', sans-serif;
+  font-family: Vegur, 'PT Sans', Verdana, sans-serif;
   font-size: 1.2em;
   margin-right: 16px;
   font-weight: bold;
