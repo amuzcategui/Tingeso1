@@ -1,8 +1,7 @@
 FROM nginx:stable-alpine
 COPY dist /usr/share/nginx/html
 
-# ▼▼ AÑADE ESTA LÍNEA ▼▼
-# Copia tu config personalizada y sobreescribe la de Nginx
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
