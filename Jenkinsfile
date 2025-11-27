@@ -1,17 +1,18 @@
 pipeline {
     agent any
     tools{
-        maven 'maven_3_8_1'
+        maven 'maven'
     }
     stages{
         stage('Build maven'){
             steps{
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
                 bat 'mvn clean package'
+                dir('lab1') {
+                                bat 'mvn clean package'
+                            }
             }
-            dir('lab1') {
-                bat 'mvn clean package'
-            }
+
         }
 
         stage('Unit Tests') {
