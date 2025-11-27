@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/openjdk/jdk:17-ubuntu
+FROM eclipse-temurin:17-jdk
 
 ARG JAR_FILE=target/lab1.jar
 COPY ${JAR_FILE} lab1.jar
