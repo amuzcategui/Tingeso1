@@ -27,7 +27,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults()) // <-- 1. HABILITA LA CONFIGURACIÓN DE CORS
+                .cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
@@ -40,21 +40,22 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 2. DEFINE EL BEAN DE CONFIGURACIÓN DE CORS
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permite peticiones desde el origen de tu frontend
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        // Permite los métodos HTTP que usará tu API
+
+        //configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:8070"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Permite todas las cabeceras
+
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        // Permite el envío de credenciales (importante para la autenticación)
+
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Aplica esta configuración a todas las rutas de tu API
+
         source.registerCorsConfiguration("/api/v1/**", configuration);
         return source;
     }

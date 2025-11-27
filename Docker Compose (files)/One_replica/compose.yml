@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Backend
+  lab1:
+    container_name: lab1
+    image: amuzcategui/lab1:latest
+    ports:
+      - "8090:8090"
+    environment:
+      - DB_HOST=host.docker.internal
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://host.docker.internal:9090/realms/sisgr-realm/protocol/openid-connect/certs
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY_OAUTH2=DEBUG
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  #  Frontend
+  frontend:
+    image: amuzcategui/lab1-frontend:latest
+    ports:
+      - "8070:80"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    
+    depends_on:
+      - lab1
