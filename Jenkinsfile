@@ -6,7 +6,7 @@ pipeline {
     stages{
         stage('Build maven'){
             steps{
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
                 bat 'mvn clean package'
                 dir('lab1') {
                                 bat 'mvn clean package'
