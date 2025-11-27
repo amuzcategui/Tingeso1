@@ -4,6 +4,15 @@ pipeline {
         maven 'maven'
     }
     stages {
+        stage("Build JAR File"){
+                    steps{
+                        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
+                        dir("demo"){
+                            bat "mvn clean install"
+                        }
+                    }
+                }
+
         stage('Build maven') {
             steps {
 
@@ -41,7 +50,7 @@ pipeline {
         stage('Push image to Docker Hub') {
                     steps {
                         script {
-                       
+
                            withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
 
                                 // Ahora usamos esas variables para el login
