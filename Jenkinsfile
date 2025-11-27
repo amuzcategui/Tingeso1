@@ -39,15 +39,18 @@ pipeline {
         }
 
         stage('Push image to Docker Hub') {
-            steps {
-                script {
+                    steps {
+                        script {
+                       
+                           withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
 
-                   withCredentials([string(credentialsId: 'docker-credentials', variable: 'pass')]) {
-                        bat 'docker login -u amuzcategui -p %Ambar2004#%'
-                   }
-                   bat 'docker push amuzcategui/lab1:latest'
+                                // Ahora usamos esas variables para el login
+                                bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                           }
+
+                           bat 'docker push amuzcategui/lab1:latest'
+                        }
+                    }
                 }
-            }
-        }
     }
 }
