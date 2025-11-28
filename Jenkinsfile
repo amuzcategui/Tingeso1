@@ -13,6 +13,19 @@ pipeline {
                     }
                 }
 
+        stage('Build maven') {
+            steps {
+
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
+
+
+                dir('lab1') {
+
+                    bat 'mvn clean package'
+                }
+            }
+        }
+
         stage('Unit Tests') {
             steps {
 
