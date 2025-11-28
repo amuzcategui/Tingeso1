@@ -25,7 +25,7 @@ pipeline {
 
         stage("Build and Push Docker Image"){
             steps{
-                dir("demo"){
+                dir("lab1"){
                     script{
                         withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                              bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
