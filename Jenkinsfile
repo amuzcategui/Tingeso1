@@ -7,7 +7,7 @@ pipeline {
         stage("Build JAR File"){
                     steps{
                         checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amuzcategui/Tingeso1.git']])
-                        dir("demo"){
+                        dir("lab1"){
                             bat "mvn clean install"
                         }
                     }
