@@ -3,19 +3,19 @@ version: "3.8"
 services:
   # --- Frontend services ---
   frontend1:
-    image: amuzcategui/lab1-frontend:latest  
+    image: amuzcategui/front:latest  
     restart: always
     networks:
       - frontend-network
 
   frontend2:
-    image: amuzcategui/lab1-frontend:latest  
+    image: amuzcategui/front:latest  
     restart: always
     networks:
       - frontend-network
 
   frontend3:
-    image: amuzcategui/lab1-frontend:latest  
+    image: amuzcategui/front:latest  
     restart: always
     networks:
       - frontend-network
