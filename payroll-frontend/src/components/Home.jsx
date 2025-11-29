@@ -64,7 +64,7 @@ const Home = () => {
   return (
     <div className="home">
       <h1>ToolRent</h1>
-      <p>Sistema de arrendamiento de herramientas. </p>
+      <p>Sistema de arrendamiento de herramientas. V2 JENKINS</p>
       <p>¡Encuentra la herramienta que necesitas para tu proyecto! </p>
       <div className="search-wrap">
       <input
