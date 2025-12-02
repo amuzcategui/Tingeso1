@@ -45,6 +45,7 @@ body {
 
 }
 
+/* diseño de tabla */
 .tools-table th,
 .tools-table td {
   padding: 12px 15px;
@@ -66,6 +67,7 @@ body {
   background-color: #333;
 }
 
+/* diseño de input*/
 input{
   border-radius: 8px;
   border: 2px solid #bb0a21;
@@ -82,6 +84,7 @@ input{
   text-align: center;
 }
 
+/* diseño del placeholder*/
 .search-input::placeholder {
   color: #52154E;           
   opacity: 1;             
@@ -128,6 +131,7 @@ input{
   margin-right: 10px;
 }
 
+/* diseño del form del kardex*/
 formControl{
   border-radius: 8px;
   border: 2px solid #bb0a21;
@@ -144,6 +148,7 @@ formControl{
   text-align: center;
 }
 
+/* diseño de */
 .report-content{
   margin-top: 1rem;
   padding: 1rem;
@@ -157,6 +162,7 @@ formControl{
 
 }
 
+/* diseño de ventana de agregar tool*/
 .addTool{
   position: absolute;
   top: 50%;
@@ -169,6 +175,7 @@ formControl{
   width: 400px;
 }
 
+/* color de letras*/
 h1 {
   font-size: 4.2em;
   line-height: 1.1;
@@ -177,6 +184,7 @@ h1 {
   color:#BB0A21;
 }
 
+/* color de letras*/
 h2{
   font-size: 2.5em;
   line-height: 1.1;
@@ -185,6 +193,7 @@ h2{
   color:#BB0A21;
 }
 
+/* color de letras*/
 p{
   font-size: 1.2em;
   line-height: 1.5;
@@ -193,6 +202,7 @@ p{
   color:#52154E;
 }
 
+/* color de letras*/
 h4{
   font-size: 1.8em;
   line-height: 1.1;
@@ -217,6 +227,7 @@ h4{
   text-align: center;
 }
 
+/* color de letras*/
 h3{
   font-size: 1.5em;
   line-height: 1.1;

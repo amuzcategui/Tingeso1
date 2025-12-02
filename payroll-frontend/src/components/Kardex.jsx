@@ -201,8 +201,8 @@ const Kardex = () => {
                   value={rangeTo}
                   onChange={(e) => setRangeTo(e.target.value)}
                 />
-                <FormControl size="small" style={{ minWidth: 120, marginLeft: 10 , marginTop: 23, marginRight: 10 , backgroundColor: '#b497d6', borderRadius: "8px" }}>
-                  <InputLabel>Tipo</InputLabel>
+                <FormControl size="small" style={{ minWidth: 120, marginLeft: 10 , marginTop: 23, marginRight: 10 , backgroundColor: '#b497d6', borderRadius: "8px" }}> 
+                  <InputLabel>Tipo</InputLabel> 
                   <Select value={movementType} onChange={(e) => setMovementType(e.target.value)}>
                     <MenuItem value="Préstamo">Préstamo</MenuItem>
                     <MenuItem value="Devolución">Devolución</MenuItem>

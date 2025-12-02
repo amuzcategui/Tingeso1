@@ -10,8 +10,8 @@ const LoanSummary = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
 
-  const [startDate, setStartDate] = useState(''); // YYYY-MM-DD (input date)
-  const [dueDate, setDueDate] = useState('');     // YYYY-MM-DD (input date)
+  const [startDate, setStartDate] = useState(''); 
+  const [dueDate, setDueDate] = useState('');     
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,8 +43,8 @@ const LoanSummary = () => {
     const loanData = {
       rutCustomer: getRutFromToken(),
       toolNames: cartItems.map(item => item.name),
-      startDate, // 'YYYY-MM-DD'
-      dueDate    // 'YYYY-MM-DD'
+      startDate, 
+      dueDate    
     };
 
 
