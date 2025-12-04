@@ -14,12 +14,6 @@ services:
     networks:
       - frontend-network
 
-  frontend3:
-    image: amuzcategui/front:latest  
-    restart: always
-    networks:
-      - frontend-network
-
   # --- Backend services ---
   backend1:
     image: amuzcategui/lab1:latest          
@@ -39,14 +33,6 @@ services:
     networks:
       - backend-network
 
-  backend3:
-    image: amuzcategui/lab1:latest          
-    restart: always
-    environment:
-      - DB_HOST=host.docker.internal        
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://host.docker.internal:9090/realms/sisgr-realm/protocol/openid-connect/certs # <-- CAMBIO 4
-    networks:
-      - backend-network
 
   # --- Nginx for frontend load balancing ---
   nginx-frontend:
@@ -58,7 +44,6 @@ services:
     depends_on:
       - frontend1
       - frontend2
-      - frontend3
     networks:
       - frontend-network
 
@@ -72,7 +57,6 @@ services:
     depends_on:
       - backend1
       - backend2
-      - backend3
     networks:
       - backend-network
 
