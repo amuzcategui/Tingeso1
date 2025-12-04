@@ -35,7 +35,7 @@ public class ToolService {
         for (ToolEntity existing : existingTools) {
             if (existing.getInitialState().equals(tool.getInitialState())
                     && existing.getToolValue() == tool.getToolValue()
-                    && existing.getCategory().equals(tool.getCategory())) {
+                    && existing.getCategory().equals(tool.getCategory()) && existing.getRentalFee() == tool.getRentalFee()) {
                 existing.setStock(existing.getStock() + tool.getStock());
                 toolToSave = existing;
                 found = true;
@@ -87,6 +87,7 @@ public class ToolService {
             dtool.setName(tool.getName());
             dtool.setCategory(tool.getCategory());
             dtool.setToolValue((tool.getToolValue()));
+            dtool.setRentalFee((tool.getRentalFee()));
             dtool.setInitialState("Dada de baja");
             dtool.setStock(quantityToDeactivate);
             toolRepository.save(dtool);
@@ -177,6 +178,7 @@ public class ToolService {
             dtool.setName(tool.getName());
             dtool.setCategory(tool.getCategory());
             dtool.setToolValue(tool.getToolValue());
+            dtool.setRentalFee((tool.getRentalFee()));
             dtool.setInitialState("Prestada");
             dtool.setStock(quantityToLoan);
             toolRepository.save(dtool);
@@ -222,6 +224,7 @@ public class ToolService {
             rtool.setName(tool.getName());
             rtool.setCategory(tool.getCategory());
             rtool.setToolValue(tool.getToolValue());
+            rtool.setRentalFee((tool.getRentalFee()));
             rtool.setInitialState("En reparación");
             rtool.setStock(quantityToRepair);
             toolRepository.save(rtool);
