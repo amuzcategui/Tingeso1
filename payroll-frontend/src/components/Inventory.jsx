@@ -6,21 +6,22 @@ import '../index.css';
 
 const Inventory = () => {
   const [tools, setTools] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { keycloak } = useKeycloak();
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial.
+  const [error, setError] = useState(null); // Estado de error.
+  const { keycloak } = useKeycloak(); // keycloak para autenticacion
+  const [isFormOpen, setIsFormOpen] = useState(false); // Estado para controlar la visibilidad del formulario
 
   useEffect(() => {
     fetchTools();
   }, []);
 
+  // Función para cargar las herramientas desde el backend
   const fetchTools = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await toolService.getAllToolsForAdmin();
+      const response = await toolService.getAllToolsForAdmin(); // Obtiene todas las herramientas para el administrador
       setTools(response.data);
     } catch (err) {
       setError('No se pudo cargar el inventario. Asegúrate de tener permisos de administrador.');
@@ -31,6 +32,7 @@ const Inventory = () => {
 
   const getAdminRut = () => keycloak.tokenParsed?.rut;
 
+  // Maneja el guardado de una nueva herramienta
   const handleSave = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -51,6 +53,7 @@ const Inventory = () => {
     } catch (err) { setError("No se pudo guardar la herramienta."); }
   };
   
+  // Maneja la eliminación (baja) de herramientas
   const handleDelete = async (tool) => {
     const quantity = prompt(`Ingresa la cantidad de "${tool.name}" a dar de baja (máx: ${tool.stock}):`, tool.stock);
     if (quantity === null) return;
@@ -63,6 +66,7 @@ const Inventory = () => {
     } else { alert("Cantidad inválida."); }
   };
 
+  // Maneja el envío de herramientas a reparación
   const handleRepair = async (tool) => {
     const quantity = prompt(`Ingresa la cantidad de "${tool.name}" a enviar a reparación (máx: ${tool.stock}):`, 1);
     if (quantity === null) return;
@@ -75,6 +79,7 @@ const Inventory = () => {
     } else { alert("Cantidad inválida."); }
   };
 
+  // Maneja el marcado de herramientas como disponibles
   const handleAvailable = async (tool) => {
     const quantity = prompt(`Ingresa la cantidad de "${tool.name}" a marcar como disponible (máx: ${tool.stock}):`, 1);
     if (quantity === null) return;
@@ -87,6 +92,7 @@ const Inventory = () => {
     } else { alert("Cantidad inválida."); }
   };
 
+  // Maneja la actualización de la tarifa de arriendo
   const handleUpdateFee = async (tool) => {
     const newFee = prompt(`Ingresa la nueva tarifa para "${tool.name}":`, tool.rentalFee);
     if (newFee === null) return;
@@ -118,6 +124,7 @@ const Inventory = () => {
       <h1>Gestión de Inventario</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
+      {/* Contenedor para el botón de añadir herramienta */}
       <div className="button-container">
       <button 
         className="action-button"

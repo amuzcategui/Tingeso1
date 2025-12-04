@@ -22,6 +22,8 @@ public class CustomerService {
 
 
     List<String> states= Arrays.asList("Activo", "Restringido");
+
+    // creates a customer
     public CustomerEntity createCustomer(CustomerEntity customer) {
         if (customer.getName()!=null && customer.getRut()!=null && customer.getPhone()!=null && customer.getEmail()!=null) {
             return customerRepository.save(customer);
@@ -30,6 +32,7 @@ public class CustomerService {
         }
     }
 
+    // If a customer has an overdue loan or unpaid debts it updates the restriction
     public void updateRestriction(CustomerEntity customer) {
         String rut = customer.getRut();
 
@@ -47,6 +50,7 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+    // It checks if the customer has been created or not, then creates it
     public CustomerEntity checkAndCreateCustomer(Jwt jwt) {
         String rut = jwt.getClaimAsString("rut");
 
@@ -75,8 +79,7 @@ public class CustomerService {
             newCustomer.setStatus("Activo");
             newCustomer.setQuantityLoans(0);
 
-            // --- CAMBIO SOLICITADO ---
-            // En lugar de guardar directamente, llamamos a tu método createCustomer.
+
             return this.createCustomer(newCustomer);
         }
 

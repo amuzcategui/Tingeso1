@@ -16,6 +16,7 @@ const LoanSummary = () => {
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Función para obtener el RUT del token de Keycloak
   const getRutFromToken = () => {
     const tp = keycloak?.tokenParsed || {};
    
@@ -50,6 +51,7 @@ const LoanSummary = () => {
 
     console.log('Enviando datos del préstamo:', loanData);
 
+    // Intenta crear el préstamo con los datos proporcionados
     try {
       setIsSubmitting(true);
       await createLoan(loanData);

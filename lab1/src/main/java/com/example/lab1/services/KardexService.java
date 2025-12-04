@@ -34,6 +34,7 @@ public class KardexService {
         return k;
     }
 
+    // creates a list with the active loans
     public Map<String, List<LoanEntity>> listActiveLoansGrouped() {
         LocalDate today = LocalDate.now();
 
@@ -52,6 +53,7 @@ public class KardexService {
         return resp;
     }
 
+    //creates a list with the overdue customers
     public List<CustomerEntity> listOverdueCustomers() {
         LocalDate today = LocalDate.now();
         List<LoanEntity> lateLoans = loanRepository.findByEndDateIsNullAndDueDateBefore(today);
@@ -72,6 +74,7 @@ public class KardexService {
         return out;
     }
 
+    //Creates a list with the top loaned tools
     public List<Object[]> topLoanedTools(LocalDate from, LocalDate to, Integer limit) {
         List<KardexEntity> prestamos = new ArrayList<>();
 

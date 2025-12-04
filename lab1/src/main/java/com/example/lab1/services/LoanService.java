@@ -170,7 +170,7 @@ public class LoanService {
                     } else if (damaged.contains(t.getName())) {
                         // repair
                         toolService.repairTool(t.getId(), rutCustomer, 1);
-                        //Puede cobrarse el valor de reparación
+
                         loan.setFine(loan.getFine() + repairCost);
 
                     } else {

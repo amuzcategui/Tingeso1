@@ -10,20 +10,20 @@ import CheckIcon from '@mui/icons-material/Check';
 import "./Menu.jsx"
 
 const Home = () => {
-  const [allTools, setAllTools] = useState([]);
-  const [filteredTools, setFilteredTools] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchPerformed, setSearchPerformed] = useState(false);
+  const [allTools, setAllTools] = useState([]); // Todas las herramientas disponibles.
+  const [filteredTools, setFilteredTools] = useState([]); // Herramientas filtradas según la búsqueda.
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial.
+  const [error, setError] = useState(null); // Estado de error.
+  const [searchPerformed, setSearchPerformed] = useState(false); // Nos dice si el usuario ya escribió algo en el buscador.
 
-  const { keycloak, initialized } = useKeycloak();
+  const { keycloak, initialized } = useKeycloak(); // keycloak para autenticacion
   const hasSyncedRef = useRef(false);
   const { addToCart, cartItems } = useCart();
 
   useEffect(() => {
 
     const run = async () => {
-      if (!initialized) return;
+      if (!initialized) return; // verifica que keycloak esté inicializado
       if (!keycloak.authenticated) { setIsLoading(false); return; }
 
       try {
@@ -45,16 +45,16 @@ const Home = () => {
     run();
   }, [initialized, keycloak.authenticated]);
 
-  const handleSearch = (event) => {
+  const handleSearch = (event) => { // Maneja la búsqueda en tiempo real.
     const searchTerm = event.target.value;
     setSearchPerformed(true);
     if (searchTerm === '') {
       setFilteredTools([]);
     } else {
       const filtered = allTools.filter(tool =>
-        tool.name.toLowerCase().includes(searchTerm.toLowerCase())
+        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) // Filtra por nombre, ignorando mayúsculas/minúsculas.
       );
-      setFilteredTools(filtered);
+      setFilteredTools(filtered); // Actualiza las herramientas filtradas.
     }
   };
 
@@ -66,7 +66,7 @@ const Home = () => {
       <h1>ToolRent</h1>
       <p>Sistema de arrendamiento de herramientas. </p>
       <p>¡Encuentra la herramienta que necesitas para tu proyecto! </p>
-      <div className="search-wrap">
+      <div className="search-wrap"> {/* Contenedor para el buscador y resultados */}
       <input
         type="text"
         placeholder="Buscar herramienta por nombre..."
@@ -97,8 +97,8 @@ const Home = () => {
                       <td>{tool.id}</td>
                       <td>{tool.name}</td>
                       <td>{tool.category}</td>
-                      <td>${tool.rentalFee}</td>
                       <td>${tool.toolValue}</td>
+                      <td>${tool.rentalFee}</td>
                       <td>
 
                         <button 

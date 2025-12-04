@@ -28,7 +28,7 @@ public class CustomerController {
     @Autowired
     private KardexService kardexService;
 
-    // RF3.1 client registration
+    // client registration
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     public ResponseEntity<?> createCustomer(@RequestBody CustomerEntity customer) {
@@ -101,7 +101,7 @@ public class CustomerController {
         }
     }
 
-    // RF6.2 clients with overdue
+    // clients with overdue
     @GetMapping("/overdue")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> customersOverdue() {
