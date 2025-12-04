@@ -18,7 +18,7 @@ services:
 
   #  Frontend
   frontend:
-    image: amuzcategui/lab1-frontend:latest
+    image: amuzcategui/front:latest
     ports:
       - "8070:80"
     deploy:
